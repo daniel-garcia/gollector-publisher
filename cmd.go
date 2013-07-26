@@ -38,12 +38,24 @@ func main() {
 	log.Printf("finished %f, %f",duration, 100000.0/duration)
 
 	log.Printf("Starting subscribe!")
-	c := s.Subscribe(1000)
+	c1 := s.Subscribe(1000)
+	c2 := s.Subscribe(1000)
+	c3 := s.Subscribe(1000)
+	c4 := s.Subscribe(1000)
 
 	i := 0
 	start = time.Now()
-	for metrics := range(c) {
-		i += len(metrics)
+    for {
+        select {
+            case metrics := <-c1:
+                i += len(metrics)
+            case metrics := <-c2:
+                i += len(metrics)
+            case metrics := <-c3:
+                i += len(metrics)
+            case metrics := <-c4:
+                i += len(metrics)
+        }
 		if (i % 1000) == 0 {
 			duration = float64(time.Now().Sub(start)) / 1000000000.0
 			log.Printf("Recived %d, elapsed %f, rate %f/s", i, duration, float64(i) / duration)
